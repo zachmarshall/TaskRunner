@@ -5,9 +5,22 @@ import (
 	"JobScheduler/pkg/jobs"
 	"context"
 	"encoding/json"
-	amqp "github.com/rabbitmq/amqp091-go"
+	"fmt"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
+
+func SetupQueue(queueName string, ch *amqp.Channel) error {
+	q, err := ch.QueueDeclare(queueName, true, false, false, false, nil)
+	if err != nil {
+		return err
+	}
+	if q.Name != queueName {
+		return fmt.Errorf("created queue name '%s' did not match requested queue name '%s'", q.Name, queueName)
+	}
+	return nil
+}
 
 // Consume starts consuming messages from the specified queue
 func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
@@ -20,6 +33,11 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 
 	if err := CreateDeadLetterExchange(ch); err != nil {
 		logger.Error("Failed to create a dead-letter exchange: ", err)
+		return
+	}
+
+	if err := SetupQueue(queueName, ch); err != nil {
+		logger.Error("Failed to setup rabbitmq queue:", err)
 		return
 	}
 
