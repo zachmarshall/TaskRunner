@@ -1,15 +1,16 @@
-package test
+package jobs
 
 import (
-	"JobScheduler/pkg/jobs"
 	"JobScheduler/pkg/jobs/email"
+	"testing"
 	"time"
 )
 
 // Send bad email job, returns true if passed, false if failed
-func SendBadEmail(d *jobs.JobDispatcher) bool {
+func TestSendBadEmail(t *testing.T) {
+	d := NewJobDispatcher()
 	// Create job payload
-	job := jobs.Job{
+	job := Job{
 		ID:   "1",
 		Type: "email", // Should be capitalized
 		Payload: email.Payload{
@@ -26,10 +27,13 @@ func SendBadEmail(d *jobs.JobDispatcher) bool {
 	// Send job
 	err := d.Dispatch(job)
 	if err == nil {
-		return false
+		t.Fatal("Expected to encounter an error when sending a bad email payload type ('email')")
 	}
+}
 
-	job = jobs.Job{
+func TestSendGoodEmail(t *testing.T) {
+	d := NewJobDispatcher()
+	job := Job{
 		ID:          "2",
 		Type:        "Email", // Should be capitalized
 		Payload:     nil,
@@ -39,10 +43,8 @@ func SendBadEmail(d *jobs.JobDispatcher) bool {
 	}
 
 	// Send job
-	err = d.Dispatch(job)
+	err := d.Dispatch(job)
 	if err == nil {
-		return false
+		t.Fatalf("Expected to encounter an error when sending a missing email payload")
 	}
-
-	return true
 }
