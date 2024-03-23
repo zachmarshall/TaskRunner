@@ -3,8 +3,9 @@ package queue
 import (
 	"JobScheduler/internal/logger"
 	"context"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // Publish publishes a job message to the specified queue

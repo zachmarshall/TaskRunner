@@ -3,6 +3,7 @@ package jobs
 import (
 	"JobScheduler/internal/logger"
 	"JobScheduler/pkg/jobs/email"
+	"JobScheduler/pkg/jobs/transfer"
 	"fmt"
 )
 
@@ -21,6 +22,10 @@ func (d *JobDispatcher) Dispatch(job Job) error {
 	switch job.Type {
 	case EmailJob:
 		return d.handleEmailJob(job)
+	case TransferStartedJob:
+		return d.handleTransferStarted(job)
+	case TransferStateChange:
+		return d.handleTransferStateChange(job)
 
 	// Add cases for other job types
 
@@ -38,4 +43,22 @@ func (d *JobDispatcher) handleEmailJob(job Job) error {
 	}
 
 	return email.SendEmail(emailJobPayload)
+}
+
+func (d *JobDispatcher) handleTransferStarted(job Job) error {
+	transferPayload, ok := job.Payload.(transfer.Transfer)
+	if !ok {
+		return fmt.Errorf("invalid payload for transfer job")
+	}
+
+	return transfer.HandleTransferStarted(transferPayload)
+}
+
+func (d *JobDispatcher) handleTransferStateChange(job Job) error {
+	transferPayload, ok := job.Payload.(transfer.TransferStateChange)
+	if !ok {
+		return fmt.Errorf("invalid payload for transfer job")
+	}
+
+	return transfer.HandleTransferStateChange(transferPayload)
 }

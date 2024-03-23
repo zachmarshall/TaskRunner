@@ -7,7 +7,9 @@ import (
 type JobType string
 
 const (
-	EmailJob JobType = "Email"
+	EmailJob            JobType = "Email"
+	TransferStartedJob  JobType = "TransferStarted"
+	TransferStateChange JobType = "TransferStateChange"
 )
 
 type Job struct {
