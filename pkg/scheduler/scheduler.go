@@ -2,19 +2,19 @@ package scheduler
 
 import (
 	"JobScheduler/internal/logger"
-	"JobScheduler/pkg/jobs"
+	"JobScheduler/pkg/jobs/dispatcher"
 	"JobScheduler/pkg/queue"
 )
 
 type Scheduler struct {
-	dispatcher  *jobs.JobDispatcher
+	dispatcher  *dispatcher.JobDispatcher
 	rabbitMQURI string
 	queueName   string
 }
 
 // NewScheduler creates a new Scheduler instance
 func NewScheduler(rmqURI string, queueName string) *Scheduler {
-	dispatcher := jobs.NewJobDispatcher()
+	dispatcher := dispatcher.NewJobDispatcher()
 	return &Scheduler{
 		dispatcher:  dispatcher,
 		rabbitMQURI: rmqURI,

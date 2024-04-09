@@ -1,8 +1,8 @@
 package transfer
 
 import (
+	"JobScheduler/pkg/email"
 	"JobScheduler/pkg/jobs"
-	"JobScheduler/pkg/jobs/email"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -49,14 +49,16 @@ func transferEmail(transfer any, tName string) (string, error) {
 func HandleTransferStarted(transfer Transfer) (jobs.Job, error) {
 	payload, err := transferEmail(transfer, "transfer_started.html")
 	if err != nil {
-		return nil, err
+		return jobs.Job{}, err
 	}
-	email.SendEmail(email.Payload{
-		DestinationAddress: transfer.TransfereeAddress,
-		Subject:            "VATSIM Transfer Initiatied",
-		Body:               payload,
-	})
-	return nil, nil
+	return jobs.Job{
+		Type: jobs.EmailJob,
+		Payload: email.Payload{
+			DestinationAddress: transfer.TransfereeAddress,
+			Subject:            "VATSIM Transfer Initiatied",
+			Body:               payload,
+		},
+	}, nil
 }
 
 func HandleTransferStateChange(transfer TransferStateChange) (jobs.Job, error) {
@@ -66,16 +68,18 @@ func HandleTransferStateChange(transfer TransferStateChange) (jobs.Job, error) {
 	} else if transfer.State == Rejected {
 		tName = "transfer_rejected.html"
 	} else {
-		return nil, fmt.Errorf("unexpected transfer state: %v", transfer.State)
+		return jobs.Job{}, fmt.Errorf("unexpected transfer state: %v", transfer.State)
 	}
 	payload, err := transferEmail(transfer, tName)
 	if err != nil {
-		return nil, err
+		return jobs.Job{}, err
 	}
-	email.SendEmail(email.Payload{
-		DestinationAddress: transfer.TransfereeAddress,
-		Subject:            fmt.Sprintf("VATSIM Transfer %v", transfer.State),
-		Body:               payload,
-	})
-	return nil, nil
+	return jobs.Job{
+		Type: jobs.EmailJob,
+		Payload: email.Payload{
+			DestinationAddress: transfer.TransfereeAddress,
+			Subject:            fmt.Sprintf("VATSIM Transfer %v", transfer.State),
+			Body:               payload,
+		},
+	}, nil
 }

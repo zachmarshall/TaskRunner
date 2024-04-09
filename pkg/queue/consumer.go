@@ -3,6 +3,7 @@ package queue
 import (
 	"JobScheduler/internal/logger"
 	"JobScheduler/pkg/jobs"
+	"JobScheduler/pkg/jobs/dispatcher"
 	"context"
 	"encoding/json"
 	"time"
@@ -11,7 +12,7 @@ import (
 )
 
 // Consume starts consuming messages from the specified queue
-func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
+func Consume(queueName string, dispatcher *dispatcher.JobDispatcher) {
 	ch, err := conn.Channel()
 	if err != nil {
 		logger.Error("Failed to open a channel: ", err)
@@ -39,11 +40,11 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 	}
 
 	forever := make(chan bool)
-	jobs := make(chan jobs.Job)
+	jobsToProcess := make(chan jobs.Job)
 
 	go func() {
 		for d := range msgs {
-			var job jobs.Job
+			job := jobs.Job{}
 			err := json.Unmarshal(d.Body, &job)
 			if err != nil {
 				logger.Error("Error unmarshalling message: ", err)
@@ -63,12 +64,12 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 				}
 				continue
 			}
-			jobs <- job
+			jobsToProcess <- job
 		}
 	}()
 
 	go func() {
-		for j := range jobs {
+		for j := range jobsToProcess {
 			newJob, err := dispatcher.Dispatch(j)
 			if err != nil {
 				logger.Error("Error dispatching job: ", err)
@@ -90,8 +91,8 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 				}
 				continue
 			}
-			if newJob != nil {
-				jobs <- newJob
+			if newJob != (jobs.Job{}) {
+				jobsToProcess <- newJob
 			}
 		}
 	}()
