@@ -16,7 +16,7 @@ func NewJobDispatcher() *JobDispatcher {
 	return &JobDispatcher{}
 }
 
-func (d *JobDispatcher) Dispatch(job Job) error {
+func (d *JobDispatcher) Dispatch(job Job) (Job, error) {
 	logger.Info("dispatching job: ", job.ID)
 
 	switch job.Type {
@@ -32,32 +32,32 @@ func (d *JobDispatcher) Dispatch(job Job) error {
 	default:
 		errMsg := fmt.Errorf("unsupported job type: %s", job.Type)
 		logger.Error(errMsg)
-		return errMsg
+		return Job{}, errMsg
 	}
 }
 
-func (d *JobDispatcher) handleEmailJob(job Job) error {
+func (d *JobDispatcher) handleEmailJob(job Job) (Job, error) {
 	emailJobPayload, ok := job.Payload.(email.Payload)
 	if !ok {
-		return fmt.Errorf("invalid payload for email job")
+		return Job{}, fmt.Errorf("invalid payload for email job")
 	}
 
-	return email.SendEmail(emailJobPayload)
+	return Job{}, email.SendEmail(emailJobPayload)
 }
 
-func (d *JobDispatcher) handleTransferStarted(job Job) error {
+func (d *JobDispatcher) handleTransferStarted(job Job) (Job, error) {
 	transferPayload, ok := job.Payload.(transfer.Transfer)
 	if !ok {
-		return fmt.Errorf("invalid payload for transfer job")
+		return Job{}, fmt.Errorf("invalid payload for transfer job")
 	}
 
 	return transfer.HandleTransferStarted(transferPayload)
 }
 
-func (d *JobDispatcher) handleTransferStateChange(job Job) error {
+func (d *JobDispatcher) handleTransferStateChange(job Job) (Job, error) {
 	transferPayload, ok := job.Payload.(transfer.TransferStateChange)
 	if !ok {
-		return fmt.Errorf("invalid payload for transfer job")
+		return Job{}, fmt.Errorf("invalid payload for transfer job")
 	}
 
 	return transfer.HandleTransferStateChange(transferPayload)

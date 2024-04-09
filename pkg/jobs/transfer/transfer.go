@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"JobScheduler/pkg/jobs"
 	"JobScheduler/pkg/jobs/email"
 	"bytes"
 	"fmt"
@@ -45,36 +46,36 @@ func transferEmail(transfer any, tName string) (string, error) {
 	return b.String(), nil
 }
 
-func HandleTransferStarted(transfer Transfer) error {
+func HandleTransferStarted(transfer Transfer) (jobs.Job, error) {
 	payload, err := transferEmail(transfer, "transfer_started.html")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	email.SendEmail(email.Payload{
 		DestinationAddress: transfer.TransfereeAddress,
 		Subject:            "VATSIM Transfer Initiatied",
 		Body:               payload,
 	})
-	return nil
+	return nil, nil
 }
 
-func HandleTransferStateChange(transfer TransferStateChange) error {
+func HandleTransferStateChange(transfer TransferStateChange) (jobs.Job, error) {
 	var tName string
 	if transfer.State == Accepted {
 		tName = "transfer_accepted.html"
 	} else if transfer.State == Rejected {
 		tName = "transfer_rejected.html"
 	} else {
-		return fmt.Errorf("unexpected transfer state: %v", transfer.State)
+		return nil, fmt.Errorf("unexpected transfer state: %v", transfer.State)
 	}
 	payload, err := transferEmail(transfer, tName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	email.SendEmail(email.Payload{
 		DestinationAddress: transfer.TransfereeAddress,
-		Subject:            "VATSIM Transfer Initiatied",
+		Subject:            fmt.Sprintf("VATSIM Transfer %v", transfer.State),
 		Body:               payload,
 	})
-	return nil
+	return nil, nil
 }

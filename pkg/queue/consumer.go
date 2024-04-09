@@ -5,8 +5,9 @@ import (
 	"JobScheduler/pkg/jobs"
 	"context"
 	"encoding/json"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // Consume starts consuming messages from the specified queue
@@ -38,6 +39,7 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 	}
 
 	forever := make(chan bool)
+	jobs := make(chan jobs.Job)
 
 	go func() {
 		for d := range msgs {
@@ -61,7 +63,13 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 				}
 				continue
 			}
-			err = dispatcher.Dispatch(job)
+			jobs <- job
+		}
+	}()
+
+	go func() {
+		for j := range jobs {
+			newJob, err := dispatcher.Dispatch(j)
 			if err != nil {
 				logger.Error("Error dispatching job: ", err)
 				// Publish the message to the dead-letter exchange
@@ -74,13 +82,16 @@ func Consume(queueName string, dispatcher *jobs.JobDispatcher) {
 					false,                  // immediate
 					amqp.Publishing{
 						ContentType: "text/plain",
-						Body:        d.Body,
+						Body:        []byte("d.Body"),
 					},
 				)
 				if err != nil {
 					logger.Error("Failed to publish message to the dead-letter exchange: ", err)
 				}
 				continue
+			}
+			if newJob != nil {
+				jobs <- newJob
 			}
 		}
 	}()

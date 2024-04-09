@@ -28,12 +28,12 @@ func SendEmail(payload Payload) error {
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	response, err := client.Send(message)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if response.StatusCode == 200 {
-		return nil
+		return nil, nil
 	}
 
-	return fmt.Errorf("failed to send email, status code: %d", response.StatusCode)
+	return nil, fmt.Errorf("failed to send email, status code: %d", response.StatusCode)
 }
