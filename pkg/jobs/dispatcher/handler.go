@@ -3,8 +3,10 @@ package dispatcher
 import (
 	"JobScheduler/internal/logger"
 	"JobScheduler/pkg/email"
+	emailHandler "JobScheduler/pkg/email/handler"
 	"JobScheduler/pkg/jobs"
 	"JobScheduler/pkg/transfer"
+	transferHandler "JobScheduler/pkg/transfer/handler"
 	"fmt"
 )
 
@@ -43,7 +45,7 @@ func (d *JobDispatcher) handleEmailJob(j jobs.Job) (jobs.Job, error) {
 		return jobs.Job{}, fmt.Errorf("invalid payload for email job")
 	}
 
-	return jobs.Job{}, email.SendEmail(emailJobPayload)
+	return jobs.Job{}, emailHandler.SendEmail(emailJobPayload)
 }
 
 func (d *JobDispatcher) handleTransferStarted(j jobs.Job) (jobs.Job, error) {
@@ -52,7 +54,7 @@ func (d *JobDispatcher) handleTransferStarted(j jobs.Job) (jobs.Job, error) {
 		return jobs.Job{}, fmt.Errorf("invalid payload for transfer job")
 	}
 
-	return transfer.HandleTransferStarted(transferPayload)
+	return transferHandler.HandleTransferStarted(transferPayload)
 }
 
 func (d *JobDispatcher) handleTransferStateChange(j jobs.Job) (jobs.Job, error) {
@@ -61,5 +63,5 @@ func (d *JobDispatcher) handleTransferStateChange(j jobs.Job) (jobs.Job, error) 
 		return j, fmt.Errorf("invalid payload for transfer job")
 	}
 
-	return transfer.HandleTransferStateChange(transferPayload)
+	return transferHandler.HandleTransferStateChange(transferPayload)
 }

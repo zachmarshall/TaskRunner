@@ -1,14 +1,16 @@
-package email
+package handler
 
 import (
 	"fmt"
 	"os"
 
+	"JobScheduler/pkg/email"
+
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendEmail(payload Payload) error {
+func SendEmail(payload email.Payload) error {
 	from := mail.NewEmail("VATUSA Mailman", "mailman@vatusa.net")
 	subject := payload.Subject
 	to := mail.NewEmail("", payload.DestinationAddress)

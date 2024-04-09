@@ -1,13 +1,5 @@
 package transfer
 
-import (
-	"JobScheduler/pkg/email"
-	"JobScheduler/pkg/jobs"
-	"bytes"
-	"fmt"
-	"html/template"
-)
-
 const (
 	Accepted = "ACCEPTED"
 	Rejected = "REJECTED"
@@ -32,54 +24,4 @@ type TransferStateChange struct {
 	Actor             string   `json:"transfer_actor"`        // the person who acted on the transfer request
 	StateChangeReason string   `json:"transfer_state_reason"` // the reason why the request was accepted or rejected
 	Contacts          []string `json:"contacts"`              // the emails to contact in case of questions
-}
-
-func transferEmail(transfer any, tName string) (string, error) {
-	t, err := template.ParseFiles(tName)
-	if nil != err {
-		return "", err
-	}
-	b := new(bytes.Buffer)
-	if err = t.Execute(b, transfer); err != nil {
-		return "", err
-	}
-	return b.String(), nil
-}
-
-func HandleTransferStarted(transfer Transfer) (jobs.Job, error) {
-	payload, err := transferEmail(transfer, "transfer_started.html")
-	if err != nil {
-		return jobs.Job{}, err
-	}
-	return jobs.Job{
-		Type: jobs.EmailJob,
-		Payload: email.Payload{
-			DestinationAddress: transfer.TransfereeAddress,
-			Subject:            "VATSIM Transfer Initiatied",
-			Body:               payload,
-		},
-	}, nil
-}
-
-func HandleTransferStateChange(transfer TransferStateChange) (jobs.Job, error) {
-	var tName string
-	if transfer.State == Accepted {
-		tName = "transfer_accepted.html"
-	} else if transfer.State == Rejected {
-		tName = "transfer_rejected.html"
-	} else {
-		return jobs.Job{}, fmt.Errorf("unexpected transfer state: %v", transfer.State)
-	}
-	payload, err := transferEmail(transfer, tName)
-	if err != nil {
-		return jobs.Job{}, err
-	}
-	return jobs.Job{
-		Type: jobs.EmailJob,
-		Payload: email.Payload{
-			DestinationAddress: transfer.TransfereeAddress,
-			Subject:            fmt.Sprintf("VATSIM Transfer %v", transfer.State),
-			Body:               payload,
-		},
-	}, nil
 }
