@@ -1,13 +1,14 @@
 package dispatcher
 
 import (
-	"JobScheduler/internal/logger"
-	"JobScheduler/pkg/email"
-	emailHandler "JobScheduler/pkg/email/handler"
-	"JobScheduler/pkg/jobs"
-	"JobScheduler/pkg/transfer"
-	transferHandler "JobScheduler/pkg/transfer/handler"
 	"fmt"
+
+	"github.com/vatusa/taskrunner/internal/logger"
+	"github.com/vatusa/taskrunner/pkg/email"
+	emailHandler "github.com/vatusa/taskrunner/pkg/email/handler"
+	"github.com/vatusa/taskrunner/pkg/jobs"
+	"github.com/vatusa/taskrunner/pkg/transfer"
+	transferHandler "github.com/vatusa/taskrunner/pkg/transfer/handler"
 )
 
 // JobDispatcher dispatches jobs to the appropriate handlers

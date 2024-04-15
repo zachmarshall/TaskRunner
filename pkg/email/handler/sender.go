@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"JobScheduler/pkg/email"
+	"github.com/vatusa/taskrunner/pkg/email"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"

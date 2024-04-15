@@ -1,10 +1,11 @@
 package dispatcher
 
 import (
-	"JobScheduler/pkg/email"
-	"JobScheduler/pkg/jobs"
 	"testing"
 	"time"
+
+	"github.com/vatusa/taskrunner/pkg/email"
+	"github.com/vatusa/taskrunner/pkg/jobs"
 )
 
 // Send bad email job, returns true if passed, false if failed

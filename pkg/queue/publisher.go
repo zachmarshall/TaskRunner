@@ -1,9 +1,10 @@
 package queue
 
 import (
-	"JobScheduler/internal/logger"
 	"context"
 	"time"
+
+	"github.com/vatusa/taskrunner/internal/logger"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )

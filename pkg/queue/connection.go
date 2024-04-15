@@ -1,10 +1,11 @@
 package queue
 
 import (
-	"JobScheduler/internal/logger"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/vatusa/taskrunner/internal/logger"
 )
 
 var conn *amqp.Connection

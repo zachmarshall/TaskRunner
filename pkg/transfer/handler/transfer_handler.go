@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"JobScheduler/pkg/email"
-	"JobScheduler/pkg/jobs"
-	"JobScheduler/pkg/transfer"
 	"bytes"
 	"fmt"
 	"html/template"
+
+	"github.com/vatusa/taskrunner/pkg/email"
+	"github.com/vatusa/taskrunner/pkg/jobs"
+	"github.com/vatusa/taskrunner/pkg/transfer"
 )
 
 func transferEmail(transfer any, tName string) (string, error) {

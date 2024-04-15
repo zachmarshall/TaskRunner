@@ -1,10 +1,11 @@
 package main
 
 import (
-	"JobScheduler/internal/logger"
-	"JobScheduler/pkg/config"
-	"JobScheduler/pkg/scheduler"
 	"fmt"
+
+	"github.com/vatusa/taskrunner/internal/logger"
+	"github.com/vatusa/taskrunner/pkg/config"
+	"github.com/vatusa/taskrunner/pkg/scheduler"
 )
 
 func main() {

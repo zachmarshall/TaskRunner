@@ -1,4 +1,4 @@
-module JobScheduler
+module github.com/vatusa/taskrunner
 
 go 1.21
 

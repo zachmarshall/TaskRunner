@@ -1,9 +1,9 @@
 package scheduler
 
 import (
-	"JobScheduler/internal/logger"
-	"JobScheduler/pkg/jobs/dispatcher"
-	"JobScheduler/pkg/queue"
+	"github.com/vatusa/taskrunner/internal/logger"
+	"github.com/vatusa/taskrunner/pkg/jobs/dispatcher"
+	"github.com/vatusa/taskrunner/pkg/queue"
 )
 
 type Scheduler struct {

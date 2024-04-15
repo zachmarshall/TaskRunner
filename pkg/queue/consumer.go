@@ -1,12 +1,13 @@
 package queue
 
 import (
-	"JobScheduler/internal/logger"
-	"JobScheduler/pkg/jobs"
-	"JobScheduler/pkg/jobs/dispatcher"
 	"context"
 	"encoding/json"
 	"time"
+
+	"github.com/vatusa/taskrunner/internal/logger"
+	"github.com/vatusa/taskrunner/pkg/jobs"
+	"github.com/vatusa/taskrunner/pkg/jobs/dispatcher"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )

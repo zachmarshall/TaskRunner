@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"JobScheduler/internal/logger"
 	"github.com/rabbitmq/amqp091-go"
+	"github.com/vatusa/taskrunner/internal/logger"
 )
 
 func CreateDeadLetterExchange(ch *amqp091.Channel) error {
