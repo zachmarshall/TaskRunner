@@ -3,6 +3,7 @@ package queue
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/vatusa/taskrunner/internal/logger"
@@ -37,6 +38,16 @@ func handleDispatchError(err error, j jobs.Job, ch *amqp.Channel) {
 		}
 	}
 }
+func SetupQueue(queueName string, ch *amqp.Channel) error {
+	q, err := ch.QueueDeclare(queueName, true, false, false, false, nil)
+	if err != nil {
+		return err
+	}
+	if q.Name != queueName {
+		return fmt.Errorf("created queue name '%s' did not match requested queue name '%s'", q.Name, queueName)
+	}
+	return nil
+}
 
 // Consume starts consuming messages from the specified queue
 func Consume(queueName string, dispatcher *dispatcher.JobDispatcher) {
@@ -49,6 +60,11 @@ func Consume(queueName string, dispatcher *dispatcher.JobDispatcher) {
 
 	if err := CreateDeadLetterExchange(ch); err != nil {
 		logger.Error("Failed to create a dead-letter exchange: ", err)
+		return
+	}
+
+	if err := SetupQueue(queueName, ch); err != nil {
+		logger.Error("Failed to setup rabbitmq queue:", err)
 		return
 	}
 
