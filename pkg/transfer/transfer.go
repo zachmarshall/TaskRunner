@@ -10,9 +10,9 @@ type Transfer struct {
 	FirstName         string `json:"fname"` // Transferee's first name
 	LastName          string `json:"lname"` // Transferee's last name
 	TransfereeAddress string `json:"email_address"`
-	CID               string `json:"cid"`           // Transferee's CID
-	TransferFrom      string `json:"transfer_from"` // Transferring from (FAC ID)
-	TransferTo        string `json:"transfer_to"`   // Transferring to (FAC ID)
+	CID               string `json:"cid"`      // Transferee's CID
+	FromFAC           string `json:"from_fac"` // Transferring from (FAC ID)
+	ToFAC             string `json:"to_fac"`   // Transferring to (FAC ID)
 	Reason            string `json:"transfer_reason"`
 }
 

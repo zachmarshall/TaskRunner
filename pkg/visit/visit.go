@@ -10,9 +10,9 @@ type Visit struct {
 	FirstName      string `json:"fname"` // Visitor's first name
 	LastName       string `json:"lname"` // Visitor's last name
 	VisitorAddress string `json:"email_address"`
-	CID            string `json:"cid"`        // Visitor's CID
-	VisitFrom      string `json:"visit_from"` // Visiting from (FAC ID)
-	VisitTo        string `json:"visit_to"`   // Visiting to (FAC ID)
+	CID            string `json:"cid"`      // Visitor's CID
+	FromFAC        string `json:"from_fac"` // Visiting from (FAC ID)
+	ToFAC          string `json:"to_fac"`   // Visiting to (FAC ID)
 }
 
 // TODO: tracking these items on inbound events seems redundant. should they be stored from the initial visit event
