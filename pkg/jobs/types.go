@@ -7,9 +7,12 @@ import (
 type JobType string
 
 const (
-	EmailJob            JobType = "Email"
-	TransferStartedJob  JobType = "TransferStarted"
-	TransferStateChange JobType = "TransferStateChange"
+	EmailJob               JobType = "Email"
+	TransferStartedJob     JobType = "TransferStarted"
+	TransferStateChangeJob JobType = "TransferStateChange"
+	VisitStartedJob        JobType = "VisitStarted"
+	VisitStateChangeJob    JobType = "VisitStateChange"
+	ReminderJob            JobType = "Reminder"
 )
 
 type Job struct {

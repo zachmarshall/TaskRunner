@@ -22,7 +22,7 @@ func visitEmail(visit any, tName string) (string, error) {
 	return b.String(), nil
 }
 
-func HandlevisitStarted(t visit.Visit) (jobs.Job, error) {
+func HandleVisitStarted(t visit.Visit) (jobs.Job, error) {
 	payload, err := visitEmail(t, "visit_started.html")
 	if err != nil {
 		return jobs.Job{}, err
@@ -37,7 +37,7 @@ func HandlevisitStarted(t visit.Visit) (jobs.Job, error) {
 	}, nil
 }
 
-func HandlevisitStateChange(t visit.VisitStateChange) (jobs.Job, error) {
+func HandleVisitStateChange(t visit.VisitStateChange) (jobs.Job, error) {
 	var tName string
 	if t.State == visit.Accepted {
 		tName = "visit_accepted.html"
