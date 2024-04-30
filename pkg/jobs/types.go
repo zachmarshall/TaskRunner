@@ -19,9 +19,9 @@ type Job struct {
 	ID          string      `json:"id"`
 	Type        JobType     `json:"type"`
 	Payload     interface{} `json:"payload"`
-	ScheduleAt  *time.Time  `json:"schedule_at"`
-	RequestedBy string      `json:"requested_by"`
-	CreatedAt   time.Time   `json:"created_at"`
+	ScheduleAt  *time.Time  `json:"scheduleAt"`
+	RequestedBy string      `json:"requestedBy"`
+	CreatedAt   time.Time   `json:"createdAt"`
 }
 
 type JobHandler interface {
